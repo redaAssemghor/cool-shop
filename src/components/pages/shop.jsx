@@ -3,6 +3,13 @@ import { Link } from "react-router-dom";
 
 function Shop() {
   const [items, setItems] = useState([]);
+  const [addItem, setAddItem] = useState(null);
+  const [click, setClick] = useState(null);
+
+  const handelClick = () => {
+    setAddItem(addItem + 1);
+    setClick(true);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -26,7 +33,9 @@ function Shop() {
             <h2 className="card-title">{item.title}</h2>
             <h2 className="card-title">{item.price}$</h2>
             <div className="">
-              <button className="btn btn-primary">Add To Cart</button>
+              <button className="btn btn-primary" onClick={handelClick}>
+                Add To Cart
+              </button>
             </div>
           </div>
         </div>
