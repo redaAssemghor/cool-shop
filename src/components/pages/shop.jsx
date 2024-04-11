@@ -3,22 +3,48 @@ import { Link } from "react-router-dom";
 
 function Shop() {
   const [items, setItems] = useState([]);
-  const [addItem, setAddItem] = useState(null);
-  const [click, setClick] = useState(null);
-
-  const handelClick = () => {
-    setAddItem(addItem + 1);
-    setClick(true);
-  };
+  const [addedToCart, setAddedToCart] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
       const response = await fetch("https://fakestoreapi.com/products");
       const data = await response.json();
-      setItems(data);
+
+      const itemsWithIsAdded = data.map((item) => ({
+        ...item,
+        isAdded: false,
+      }));
+      setItems(itemsWithIsAdded);
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setAddedToCart(items.filter((item) => item.isAdded));
+    console.log(addedToCart);
+  }, [items]);
+
+  const addToCart = (id) => {
+    setItems(
+      items.map((item) => {
+        if (item.id === id) {
+          return { ...item, isAdded: true };
+        }
+        return item;
+      })
+    );
+  };
+
+  const removeFromCart = (id) => {
+    setItems(
+      items.map((item) => {
+        if (item.id === id) {
+          return { ...item, isAdded: false };
+        }
+        return item;
+      })
+    );
+  };
 
   return (
     <div className="grid grid-cols-3 m-5">
@@ -33,9 +59,21 @@ function Shop() {
             <h2 className="card-title">{item.title}</h2>
             <h2 className="card-title">{item.price}$</h2>
             <div className="">
-              <button className="btn btn-primary" onClick={handelClick}>
-                Add To Cart
-              </button>
+              {!item.isAdded ? (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => addToCart(item.id)}
+                >
+                  Add To Cart
+                </button>
+              ) : (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => removeFromCart(item.id)}
+                >
+                  Remove from Cart
+                </button>
+              )}
             </div>
           </div>
         </div>

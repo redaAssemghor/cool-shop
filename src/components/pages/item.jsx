@@ -33,7 +33,12 @@ function Item() {
     fetchData();
   }, [itemId]);
 
-  if (loading) return <h1>its loaging ...</h1>;
+  if (loading)
+    return (
+      <div className="flex justify-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
   if (error) return <p>Error: {error}</p>;
   return (
     <div className="m-9">
@@ -41,7 +46,7 @@ function Item() {
         <FontAwesomeIcon className="h-7 mb-3" icon={faArrowLeft} />
       </Link>
       <div className="card card-side shadow-xl">
-        <figure>
+        <figure className="max-w-96">
           <img src={item.image} />
         </figure>
         <div className="card-body">
@@ -66,8 +71,8 @@ function Item() {
           <div className="mt-8">
             <p>{item.description}</p>
             <div className="card-actions justify-end mt-5">
-              <button className="btn btn-base-100">Add to Cart</button>
-              <button className="btn btn-primary">Buy Now</button>
+              <button className="btn btn-base-100 w-40 m-1">Add to Cart</button>
+              <button className="btn btn-primary w-40 m-1">Buy Now</button>
             </div>
           </div>
         </div>
