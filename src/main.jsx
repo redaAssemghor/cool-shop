@@ -5,6 +5,7 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Navbar from "./components/navbar.jsx";
 import Shop from "./components/pages/shop.jsx";
+import Item from "./components/pages/item.jsx";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
   {
     path: "/shop",
     element: <Shop />,
+  },
+  {
+    path: "/shop/:itemId",
+    element: <Item />,
   },
 ]);
 
