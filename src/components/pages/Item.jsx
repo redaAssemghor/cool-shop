@@ -5,15 +5,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { useCart } from "../CartContext";
 
 function Item() {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [quantity, setQuantity] = useState(1);
+  const [updatedQuantity, setUpdatedQuantity] = useState(1);
 
   const { itemId } = useParams();
+
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
@@ -40,6 +44,11 @@ function Item() {
       </div>
     );
   if (error) return <p>Error: {error}</p>;
+
+  const buyNow = (id) => {
+    addToCart(id);
+    navigate("/checkout");
+  };
   return (
     <div className="m-9">
       <Link to="/shop">
@@ -52,16 +61,20 @@ function Item() {
         <div className="card-body">
           <h2 className="card-title text-3xl">{item.title}</h2>
           <h2 className="font-light">{item.category}</h2>
-          <h2 className="card-title font-bold">${item.price * quantity}</h2>
+          <h2 className="card-title font-bold">
+            ${item.price * updatedQuantity}
+          </h2>
           <div className="flex items-center">
-            <button onClick={() => setQuantity((q) => Math.max(q - 1, 1))}>
+            <button
+              onClick={() => setUpdatedQuantity((q) => Math.max(q - 1, 1))}
+            >
               <FontAwesomeIcon
                 className="border-2 p-1 mt-2 rounded-lg hover:bg-gray-100"
                 icon={faMinus}
               />
             </button>
-            <span className="text-2xl font-medium mx-4">{quantity}</span>
-            <button onClick={() => setQuantity((q) => q + 1)}>
+            <span className="text-2xl font-medium mx-4">{updatedQuantity}</span>
+            <button onClick={() => setUpdatedQuantity((q) => q + 1)}>
               <FontAwesomeIcon
                 className="border-2 p-1 mt-2 rounded-lg hover:bg-gray-100"
                 icon={faPlus}
@@ -71,8 +84,18 @@ function Item() {
           <div className="mt-8">
             <p>{item.description}</p>
             <div className="card-actions justify-end mt-5">
-              <button className="btn btn-base-100 w-40 m-1">Add to Cart</button>
-              <button className="btn btn-primary w-40 m-1">Buy Now</button>
+              <button
+                className="btn btn-base-100 w-40 m-1"
+                onClick={() => addToCart(item.id)}
+              >
+                Add to Cart
+              </button>
+              <button
+                className="btn btn-primary w-40 m-1"
+                onClick={() => buyNow(item.id)}
+              >
+                Buy Now
+              </button>
             </div>
           </div>
         </div>

@@ -8,12 +8,12 @@ function Navbar() {
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl" href="/">
+        <Link className="btn btn-ghost text-xl" to="/">
           Home
-        </a>
-        <a className="btn btn-ghost text-xl" href="/shop">
+        </Link>
+        <Link className="btn btn-ghost text-xl" to="/shop">
           Shop
-        </a>
+        </Link>
       </div>
       <div className="flex-none">
         <div className="form-control">
