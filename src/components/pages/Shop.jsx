@@ -1,50 +1,8 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useCart } from "../CartContext";
 
 function Shop() {
-  const [items, setItems] = useState([]);
-  const [addedToCart, setAddedToCart] = useState([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch("https://fakestoreapi.com/products");
-      const data = await response.json();
-
-      const itemsWithIsAdded = data.map((item) => ({
-        ...item,
-        isAdded: false,
-      }));
-      setItems(itemsWithIsAdded);
-    }
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    setAddedToCart(items.filter((item) => item.isAdded));
-    console.log(addedToCart);
-  }, [items]);
-
-  const addToCart = (id) => {
-    setItems(
-      items.map((item) => {
-        if (item.id === id) {
-          return { ...item, isAdded: true };
-        }
-        return item;
-      })
-    );
-  };
-
-  const removeFromCart = (id) => {
-    setItems(
-      items.map((item) => {
-        if (item.id === id) {
-          return { ...item, isAdded: false };
-        }
-        return item;
-      })
-    );
-  };
+  const { items, addToCart, removeFromCart } = useCart();
 
   return (
     <div className="grid grid-cols-3 m-5">

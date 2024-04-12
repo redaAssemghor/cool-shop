@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useCart } from "./CartContext";
 
-function Navbar({ count }) {
-  const [itemsCount, setItemsCount] = useState(0);
+function Navbar() {
+  const { cartItems, itemsPrice } = useCart();
+  const itemsCount = cartItems.length;
 
   return (
     <div className="navbar bg-base-100">
@@ -49,9 +51,11 @@ function Navbar({ count }) {
           >
             <div className="card-body">
               <span className="font-bold text-lg">{itemsCount} Items</span>
-              <span className="text-info">Subtotal: $999</span>
+              <span className="text-info">Total Price : {itemsPrice}$</span>
               <div className="card-actions">
-                <button className="btn btn-primary btn-block">View cart</button>
+                <Link className="btn btn-primary btn-block" to={"/checkout"}>
+                  View cart
+                </Link>
               </div>
             </div>
           </div>

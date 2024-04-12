@@ -1,4 +1,4 @@
-import Hero from "./components/banner";
+import Hero from "./components/Banner";
 
 function App() {
   return (
