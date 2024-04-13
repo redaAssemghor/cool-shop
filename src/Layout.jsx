@@ -1,10 +1,12 @@
+import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 
 function Layout({ children }) {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <div>{children}</div>
+      <main className="flex-1 overflow-auto">{children}</main>
+      <Footer />
     </div>
   );
 }

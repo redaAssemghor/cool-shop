@@ -2,11 +2,14 @@ import { Link } from "react-router-dom";
 import { useCart } from "./CartContext";
 
 function Navbar() {
-  const { cartItems, itemsPrice } = useCart();
+  const { cartItems, totalItemsPrice } = useCart();
   const itemsCount = cartItems.length;
 
   return (
-    <div className="navbar bg-base-100">
+    <div
+      className="navbar bg-base-100"
+      style={{ position: "sticky", top: 0, zIndex: 1000 }}
+    >
       <div className="flex-1">
         <Link className="btn btn-ghost text-xl" to="/">
           Home
@@ -51,7 +54,9 @@ function Navbar() {
           >
             <div className="card-body">
               <span className="font-bold text-lg">{itemsCount} Items</span>
-              <span className="text-info">Total Price : {itemsPrice}$</span>
+              <span className="text-info">
+                Total Price : {totalItemsPrice}$
+              </span>
               <div className="card-actions">
                 <Link className="btn btn-primary btn-block" to={"/checkout"}>
                   View cart
