@@ -14,6 +14,7 @@ const CartContext = createContext({
   filterCategory: () => {},
   filteredItems: [],
   activeCategories: [],
+  isLoading: Boolean,
 });
 
 export const useCart = () => useContext(CartContext);
@@ -25,6 +26,7 @@ export const CartProvider = ({ children }) => {
   const [filteredItems, setFilteredItems] = useState([]);
   const [activeCategories, setActiveCategories] = useState(new Set());
   const [totalItemsPrice, setTotalItemsPrice] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -36,6 +38,7 @@ export const CartProvider = ({ children }) => {
         quantity: 1,
       }));
       setItems(itemsWithAdded);
+      setIsLoading(false);
       setFilteredItems(itemsWithAdded);
       setCategories(Array.from(new Set(data.map((item) => item.category))));
     }
@@ -109,6 +112,7 @@ export const CartProvider = ({ children }) => {
         filterCategory,
         filteredItems,
         activeCategories,
+        isLoading,
       }}
     >
       {children}

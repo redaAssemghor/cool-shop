@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Hero() {
   return (
     <div
@@ -10,13 +12,14 @@ function Hero() {
       <div className="hero-overlay bg-opacity-60"></div>
       <div className="hero-content text-center text-neutral-content">
         <div className="max-w-md">
-          <h1 className="mb-5 text-5xl font-bold">Hello there</h1>
+          <h1 className="mb-5 text-4xl font-bold">Welcome To Cool Shop!</h1>
           <p className="mb-5">
-            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-            excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
-            a id nisi.
+            Discover our selection of stuff, bursting with flavor and vitality.
+            Delivered straight from the farm to your table.
           </p>
-          <button className="btn btn-primary">Shop Now!</button>
+          <Link className="btn btn-primary" to={"/shop"}>
+            Shop Now!
+          </Link>
         </div>
       </div>
     </div>

@@ -7,8 +7,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTag, faBagShopping } from "@fortawesome/free-solid-svg-icons";
 
 function Shop() {
-  const { filteredItems, addToCart, removeFromCart, activeCategories } =
-    useCart();
+  const {
+    filteredItems,
+    addToCart,
+    removeFromCart,
+    activeCategories,
+    isLoading,
+  } = useCart();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(4);
@@ -19,13 +24,31 @@ function Shop() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // Skeleton Loader Component for better separation of concerns
+  const renderSkeletonLoaders = () => (
+    <div className="grid grid-cols-3 gap-4 m-8">
+      {Array.from({ length: 6 }).map((_, index) => (
+        <div key={index} className="animate-pulse flex flex-col gap-4">
+          <div className="skeleton h-52 bg-gray-300"></div>
+          <div className="skeleton h-6 bg-gray-300 w-3/4"></div>
+          <div className="skeleton h-6 bg-gray-300"></div>
+          <div className="skeleton h-6 bg-gray-300 w-1/2"></div>
+        </div>
+      ))}
+    </div>
+  );
+
+  if (isLoading) {
+    return renderSkeletonLoaders();
+  }
+
   return (
     <div className="m-8">
       <div className="flex">
         <Categories />
         <div>
           <div className="m-2">
-            <h1 className="font-bold mb-4">Items({filteredItems.length})</h1>
+            <h1 className="font-bold mb-4">Items ({filteredItems.length})</h1>
             {[...activeCategories].map((category) => (
               <span
                 key={category}
@@ -37,30 +60,33 @@ function Shop() {
           </div>
           <div className="grid grid-cols-3 mt-7">
             {currentItems.map((item) => (
-              <div key={item.id} className="card card-compact shadow-xlm-2">
+              <div key={item.id} className="card card-compact shadow-xl m-2">
                 <Link to={`/shop/${item.id}`}>
                   <figure>
-                    <img className="w-[200px]" src={item.image} alt="image" />
+                    <img
+                      className="w-[200px]"
+                      src={item.image}
+                      alt={item.title}
+                    />
                   </figure>
                 </Link>
                 <div className="card-body justify-end">
                   <h2 className="card-title">{item.title}</h2>
-                  <h2 className="card-title">{item.price}$</h2>
+                  <h2 className="card-title">${item.price}</h2>
                   <div className="">
                     {!item.isAdded ? (
                       <button
                         className="btn"
                         onClick={() => addToCart(item.id)}
                       >
-                        Add To Cart
-                        <FontAwesomeIcon className="" icon={faBagShopping} />
+                        Add To Cart <FontAwesomeIcon icon={faBagShopping} />
                       </button>
                     ) : (
                       <button
                         className="btn"
                         onClick={() => removeFromCart(item.id)}
                       >
-                        Remove From Cart
+                        Remove From Cart{" "}
                         <FontAwesomeIcon icon={faBagShopping} />
                       </button>
                     )}
