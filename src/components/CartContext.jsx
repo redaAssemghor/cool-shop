@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext({
   items: [],
+  categories: [],
   cartItems: [],
   addToCart: () => {},
   removeFromCart: () => {},
@@ -10,6 +11,9 @@ const CartContext = createContext({
   incrementQuantity: () => {},
   decrementQuantity: () => {},
   deleteItem: () => {},
+  filterCategory: () => {},
+  filteredItems: [],
+  activeCategories: [],
 });
 
 export const useCart = () => useContext(CartContext);
@@ -17,66 +21,59 @@ export const useCart = () => useContext(CartContext);
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [items, setItems] = useState([]);
-  const [totalItemsPrice, setTotalItemsPrice] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [activeCategories, setActiveCategories] = useState(new Set());
+  const [totalItemsPrice, setTotalItemsPrice] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
       const response = await fetch("https://fakestoreapi.com/products");
       const data = await response.json();
-
-      const itemsWithIsAdded = data.map((item) => ({
+      const itemsWithAdded = data.map((item) => ({
         ...item,
         isAdded: false,
         quantity: 1,
       }));
-      setItems(itemsWithIsAdded);
+      setItems(itemsWithAdded);
+      setFilteredItems(itemsWithAdded);
+      setCategories(Array.from(new Set(data.map((item) => item.category))));
     }
     fetchData();
   }, []);
 
   useEffect(() => {
     setCartItems(items.filter((item) => item.isAdded));
-  }, [items]);
+    setTotalItemsPrice(
+      cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+    );
+  }, [items, cartItems]);
 
   useEffect(() => {
-    const totaleItemsPrice = cartItems.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0
-    );
-    setTotalItemsPrice(totaleItemsPrice);
-  }, [cartItems]);
+    if (activeCategories.size > 0) {
+      setFilteredItems(
+        items.filter((item) => activeCategories.has(item.category))
+      );
+    } else {
+      setFilteredItems(items);
+    }
+  }, [items, activeCategories]);
 
-  const addToCart = (id) => {
+  const addToCart = (id) =>
     setItems(
-      items.map((item) => {
-        if (item.id === id) {
-          return { ...item, isAdded: true };
-        }
-        return item;
-      })
+      items.map((item) => (item.id === id ? { ...item, isAdded: true } : item))
     );
-  };
-
-  const removeFromCart = (id) => {
+  const removeFromCart = (id) =>
     setItems(
-      items.map((item) => {
-        if (item.id === id) {
-          return { ...item, isAdded: false };
-        }
-        return item;
-      })
+      items.map((item) => (item.id === id ? { ...item, isAdded: false } : item))
     );
-  };
-
-  const incrementQuantity = (id) => {
+  const incrementQuantity = (id) =>
     setItems(
       items.map((item) =>
         item.id === id ? { ...item, quantity: item.quantity + 1 } : item
       )
     );
-  };
-
-  const decrementQuantity = (id) => {
+  const decrementQuantity = (id) =>
     setItems(
       items.map((item) =>
         item.id === id
@@ -84,10 +81,16 @@ export const CartProvider = ({ children }) => {
           : item
       )
     );
-  };
+  const deleteItem = (id) => setItems(items.filter((item) => item.id !== id));
 
-  const deleteItem = (id) => {
-    setItems(items.filter((item) => item.id !== id));
+  const filterCategory = (category, isActive) => {
+    const updatedActiveCategories = new Set(activeCategories);
+    if (isActive) {
+      updatedActiveCategories.add(category);
+    } else {
+      updatedActiveCategories.delete(category);
+    }
+    setActiveCategories(updatedActiveCategories);
   };
 
   return (
@@ -102,9 +105,15 @@ export const CartProvider = ({ children }) => {
         incrementQuantity,
         decrementQuantity,
         deleteItem,
+        categories,
+        filterCategory,
+        filteredItems,
+        activeCategories,
       }}
     >
       {children}
     </CartContext.Provider>
   );
 };
+
+export default CartProvider;

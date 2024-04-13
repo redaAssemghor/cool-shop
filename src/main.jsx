@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Navbar from "./components/Navbar.jsx";
 import Shop from "./components/pages/Shop.jsx";
 import Item from "./components/pages/Item.jsx";
 import { CartProvider } from "./components/CartContext.jsx";
