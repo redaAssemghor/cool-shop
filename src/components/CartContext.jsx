@@ -15,6 +15,8 @@ const CartContext = createContext({
   filteredItems: [],
   activeCategories: [],
   isLoading: Boolean,
+  getFilteredItems: () => {},
+  queriedItems: [],
 });
 
 export const useCart = () => useContext(CartContext);
@@ -27,6 +29,18 @@ export const CartProvider = ({ children }) => {
   const [activeCategories, setActiveCategories] = useState(new Set());
   const [totalItemsPrice, setTotalItemsPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [queriedItems, setQueriedItems] = useState([]);
+
+  const getFilteredItems = (query) => {
+    if (!query) {
+      setQueriedItems(items);
+    } else {
+      const filtered = items.filter((item) =>
+        item.title.toLowerCase().includes(query.toLowerCase())
+      );
+      setQueriedItems(filtered);
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -50,7 +64,7 @@ export const CartProvider = ({ children }) => {
     setTotalItemsPrice(
       cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
     );
-  }, [items, cartItems]);
+  }, [items]);
 
   useEffect(() => {
     if (activeCategories.size > 0) {
@@ -113,6 +127,8 @@ export const CartProvider = ({ children }) => {
         filteredItems,
         activeCategories,
         isLoading,
+        getFilteredItems,
+        queriedItems,
       }}
     >
       {children}

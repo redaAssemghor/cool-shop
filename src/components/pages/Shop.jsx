@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../CartContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Pagination from "../Pagination";
 import Categories from "../Categories";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,10 +13,13 @@ function Shop() {
     removeFromCart,
     activeCategories,
     isLoading,
+    queriedItems,
   } = useCart();
 
+  // Then map over displayItems for rendering
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(4);
+  const [itemsPerPage, setItemsPerPage] = useState(6);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -24,23 +27,22 @@ function Shop() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Skeleton Loader Component for better separation of concerns
   const renderSkeletonLoaders = () => (
-    <div className="grid grid-cols-3 gap-4 m-8">
-      {Array.from({ length: 6 }).map((_, index) => (
-        <div key={index} className="animate-pulse flex flex-col gap-4">
-          <div className="skeleton h-52 bg-gray-300"></div>
-          <div className="skeleton h-6 bg-gray-300 w-3/4"></div>
-          <div className="skeleton h-6 bg-gray-300"></div>
-          <div className="skeleton h-6 bg-gray-300 w-1/2"></div>
-        </div>
-      ))}
+    <div className="animate-pulse flex flex-col gap-4 h-[400px]">
+      <div className="skeleton h-52 w-96 bg-gray-300"></div>
+      <div className="skeleton h-6 bg-gray-300 w-3/4"></div>
+      <div className="skeleton h-6 bg-gray-300"></div>
+      <div className="skeleton h-6 bg-gray-300 w-1/2"></div>
     </div>
   );
 
-  if (isLoading) {
-    return renderSkeletonLoaders();
-  }
+  const displayItems = queriedItems.length > 0 ? queriedItems : currentItems;
+
+  useEffect(() => {
+    if (currentPage > 1 && displayItems.length === 0) {
+      setCurrentPage(1);
+    }
+  }, [displayItems.length, currentPage]);
 
   return (
     <div className="m-8">
@@ -59,45 +61,54 @@ function Shop() {
             ))}
           </div>
           <div className="grid grid-cols-3 mt-7">
-            {currentItems.map((item) => (
-              <div key={item.id} className="card card-compact shadow-xl m-2">
-                <Link to={`/shop/${item.id}`}>
-                  <figure>
-                    <img
-                      className="w-[200px]"
-                      src={item.image}
-                      alt={item.title}
-                    />
-                  </figure>
-                </Link>
-                <div className="card-body justify-end">
-                  <h2 className="card-title">{item.title}</h2>
-                  <h2 className="card-title">${item.price}</h2>
-                  <div className="">
-                    {!item.isAdded ? (
-                      <button
-                        className="btn"
-                        onClick={() => addToCart(item.id)}
-                      >
-                        Add To Cart <FontAwesomeIcon icon={faBagShopping} />
-                      </button>
-                    ) : (
-                      <button
-                        className="btn"
-                        onClick={() => removeFromCart(item.id)}
-                      >
-                        Remove From Cart{" "}
-                        <FontAwesomeIcon icon={faBagShopping} />
-                      </button>
-                    )}
+            {isLoading
+              ? Array.from({ length: itemsPerPage }, (_, index) => (
+                  <div key={index} className="card card-compact shadow-xl m-2">
+                    {renderSkeletonLoaders()}
                   </div>
-                </div>
-              </div>
-            ))}
+                ))
+              : displayItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="card card-compact shadow-xl m-2"
+                  >
+                    <Link to={`/shop/${item.id}`}>
+                      <figure>
+                        <img
+                          className="max-w-[200px] max-h-[200px]"
+                          src={item.image}
+                          alt={item.title}
+                        />
+                      </figure>
+                    </Link>
+                    <div className="card-body justify-end">
+                      <h2 className="card-title">{item.title}</h2>
+                      <h2 className="card-title">${item.price}</h2>
+                      <div className="">
+                        {!item.isAdded ? (
+                          <button
+                            className="btn"
+                            onClick={() => addToCart(item.id)}
+                          >
+                            Add To Cart <FontAwesomeIcon icon={faBagShopping} />
+                          </button>
+                        ) : (
+                          <button
+                            className="btn"
+                            onClick={() => removeFromCart(item.id)}
+                          >
+                            Remove From Cart{" "}
+                            <FontAwesomeIcon icon={faBagShopping} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
           </div>
         </div>
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center mt-10">
         <Pagination
           itemsPerPage={itemsPerPage}
           totalItems={filteredItems.length}

@@ -16,7 +16,7 @@ function Item() {
 
   const { itemId } = useParams();
 
-  const { addToCart } = useCart();
+  const { addToCart, cartItems, removeFromCart } = useCart();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -84,12 +84,22 @@ function Item() {
           <div className="mt-8">
             <p>{item.description}</p>
             <div className="card-actions justify-end mt-5">
-              <button
-                className="btn btn-base-100 w-40 m-1"
-                onClick={() => addToCart(item.id)}
-              >
-                Add to Cart
-              </button>
+              {cartItems.some((cartItem) => cartItem.id === item.id) ? (
+                <button
+                  className="btn btn-base-100 w-40 m-1"
+                  onClick={() => removeFromCart(item.id)}
+                >
+                  Added to Cart
+                </button>
+              ) : (
+                <button
+                  className="btn btn-base-100 w-40 m-1"
+                  onClick={() => addToCart(item.id)}
+                >
+                  Add to Cart
+                </button>
+              )}
+
               <button
                 className="btn btn-primary w-40 m-1"
                 onClick={() => buyNow(item.id)}

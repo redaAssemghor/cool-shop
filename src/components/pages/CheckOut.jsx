@@ -30,6 +30,7 @@ function CheckOut() {
         <Link to="/shop">
           <FontAwesomeIcon className="h-7 mb-3" icon={faArrowLeft} />
         </Link>
+        <h1 className="card-title my-5">Shopping Bag</h1>
         {cartItems.map((item) => (
           <div className="card card-side shadow-xl p-4 mb-5" key={item.id}>
             <figure className="max-w-20">
@@ -38,29 +39,36 @@ function CheckOut() {
             <div className="card-body">
               <h2 className="card-title">{item.title}</h2>
               <h2 className="font-light">{item.category}</h2>
+              <h2 className="font-light text-xs">Qty:{item.quantity}</h2>
             </div>
-            <div className="flex items-center mr-4">
-              <button onClick={() => decrementQuantity(item.id)}>
-                <FontAwesomeIcon
-                  className="border-2 p-1 mt-2 rounded-lg hover:bg-gray-100"
-                  icon={faMinus}
-                />
-              </button>
-              <span className="text-2xl font-medium mx-4">{item.quantity}</span>
-              <button onClick={() => incrementQuantity(item.id)}>
-                <FontAwesomeIcon
-                  className="border-2 p-1 mt-2 rounded-lg hover:bg-gray-100"
-                  icon={faPlus}
-                />
-              </button>
-            </div>
-            <div className="flex gap-4">
-              <button onClick={() => deleteItem(item.id)}>
-                <FontAwesomeIcon
-                  className="border-2 p-1 mt-2 rounded-lg hover:bg-gray-100"
-                  icon={faTrash}
-                />
-              </button>
+            <div className="flex w-[300px] justify-between">
+              <div className="flex gap-10">
+                <div className="flex items-center mr-4">
+                  <button onClick={() => decrementQuantity(item.id)}>
+                    <FontAwesomeIcon
+                      className="border-2 p-1 mt-2 rounded-lg hover:bg-gray-100"
+                      icon={faMinus}
+                    />
+                  </button>
+                  <span className="text-2xl font-medium mx-4">
+                    {item.quantity}
+                  </span>
+                  <button onClick={() => incrementQuantity(item.id)}>
+                    <FontAwesomeIcon
+                      className="border-2 p-1 mt-2 rounded-lg hover:bg-gray-100"
+                      icon={faPlus}
+                    />
+                  </button>
+                </div>
+                <div className="flex gap-4">
+                  <button onClick={() => deleteItem(item.id)}>
+                    <FontAwesomeIcon
+                      className="border-2 p-1 mt-2 rounded-lg hover:bg-gray-100"
+                      icon={faTrash}
+                    />
+                  </button>
+                </div>
+              </div>
               <h2 className="card-title">{item.price * item.quantity}$</h2>
             </div>
           </div>
