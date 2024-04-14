@@ -25,13 +25,13 @@ function CheckOut() {
   }
 
   return (
-    <div className="flex">
+    <div className="flex base-100 bg-base-100">
       <div className="m-9 w-2/3">
         <Link to="/shop">
           <FontAwesomeIcon className="h-7 mb-3" icon={faArrowLeft} />
         </Link>
         {cartItems.map((item) => (
-          <div className="card card-side shadow-xl p-4" key={item.id}>
+          <div className="card card-side shadow-xl p-4 mb-5" key={item.id}>
             <figure className="max-w-20">
               <img src={item.image} />
             </figure>
