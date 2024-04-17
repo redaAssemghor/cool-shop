@@ -1,12 +1,18 @@
 import { Link } from "react-router-dom";
 import { useCart } from "./CartContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { saveToLocalStorage } from "../localStorageUtils";
 
 function Navbar() {
   const { cartItems, totalItemsPrice, getFilteredItems } = useCart();
   const itemsCount = cartItems.length;
 
   const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    console.log("Saving cart items to local storage", cartItems);
+    saveToLocalStorage("LOCAL_CART_KEY", cartItems);
+  }, [cartItems]);
 
   return (
     <div

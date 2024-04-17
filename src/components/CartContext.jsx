@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { loadFromLocalStorage, saveToLocalStorage } from "../localStorageUtils";
 
 const CartContext = createContext({
   items: [],
@@ -6,7 +7,7 @@ const CartContext = createContext({
   cartItems: [],
   addToCart: () => {},
   removeFromCart: () => {},
-  cartCount: 0,
+  cartCount: Number,
   totalItemsPrice: 0,
   incrementQuantity: () => {},
   decrementQuantity: () => {},
@@ -22,7 +23,10 @@ const CartContext = createContext({
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    return loadFromLocalStorage("LOCAL_CART_KEY", []);
+  });
+
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
@@ -44,26 +48,41 @@ export const CartProvider = ({ children }) => {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch("https://fakestoreapi.com/products");
-      const data = await response.json();
-      const itemsWithAdded = data.map((item) => ({
-        ...item,
-        isAdded: false,
-        quantity: 1,
-      }));
-      setItems(itemsWithAdded);
-      setIsLoading(false);
-      setFilteredItems(itemsWithAdded);
-      setCategories(Array.from(new Set(data.map((item) => item.category))));
+      setIsLoading(true);
+      try {
+        const response = await fetch("https://fakestoreapi.com/products");
+        if (!response.ok) throw new Error("Failed to fetch");
+        const data = await response.json();
+        const storedCart = loadFromLocalStorage("LOCAL_CART_KEY", []);
+        const itemsWithAdded = data.map((item) => ({
+          ...item,
+          isAdded: storedCart.some((cartItem) => cartItem.id === item.id),
+          quantity: 1,
+        }));
+        setItems(itemsWithAdded);
+        setFilteredItems(itemsWithAdded);
+        setCategories(Array.from(new Set(data.map((item) => item.category))));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Optionally set an error state and display a message based on this state
+      } finally {
+        setIsLoading(false);
+      }
     }
     fetchData();
   }, []);
 
   useEffect(() => {
-    setCartItems(items.filter((item) => item.isAdded));
-    setTotalItemsPrice(
-      cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
-    );
+    if (items.length > 0) {
+      const updatedCartItems = items.filter((item) => item.isAdded);
+      setCartItems(updatedCartItems);
+      setTotalItemsPrice(
+        updatedCartItems.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        )
+      );
+    }
   }, [items]);
 
   useEffect(() => {
@@ -75,6 +94,10 @@ export const CartProvider = ({ children }) => {
       setFilteredItems(items);
     }
   }, [items, activeCategories]);
+
+  useEffect(() => {
+    saveToLocalStorage("LOCAL_CART_KEY", cartItems);
+  }, [cartItems]);
 
   const addToCart = (id) =>
     setItems(

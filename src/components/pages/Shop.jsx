@@ -8,6 +8,7 @@ import { faTag, faBagShopping } from "@fortawesome/free-solid-svg-icons";
 
 function Shop() {
   const {
+    cartItems,
     filteredItems,
     addToCart,
     removeFromCart,
@@ -16,7 +17,7 @@ function Shop() {
     queriedItems,
   } = useCart();
 
-  // Then map over displayItems for rendering
+  // map over displayItems for rendering
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(6);
@@ -28,7 +29,7 @@ function Shop() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const renderSkeletonLoaders = () => (
-    <div className="animate-pulse flex flex-col gap-4 h-[400px]">
+    <div className="animate-pulse flex flex-col gap-4 lg:h-[400px] lg:w-[400px] mr-6">
       <div className="skeleton h-52 w-96 bg-gray-300"></div>
       <div className="skeleton h-6 bg-gray-300 w-3/4"></div>
       <div className="skeleton h-6 bg-gray-300"></div>
@@ -50,7 +51,7 @@ function Shop() {
         <Categories />
         <div>
           <div className="m-2">
-            <h1 className="font-bold mb-4">Items ({filteredItems.length})</h1>
+            <h1 className="font-bold mb-11">Items ({filteredItems.length})</h1>
             {[...activeCategories].map((category) => (
               <span
                 key={category}
@@ -60,17 +61,17 @@ function Shop() {
               </span>
             ))}
           </div>
-          <div className="grid grid-cols-3 mt-7">
+          <div className="grid grid-cols-3 mt-7 ">
             {isLoading
               ? Array.from({ length: itemsPerPage }, (_, index) => (
-                  <div key={index} className="card card-compact shadow-xl m-2">
+                  <div key={index} className="">
                     {renderSkeletonLoaders()}
                   </div>
                 ))
               : displayItems.map((item) => (
                   <div
                     key={item.id}
-                    className="card card-compact shadow-xl m-2"
+                    className="card card-compact shadow-xl m-2 lg:h-[400px] lg:w-[400px]"
                   >
                     <Link to={`/shop/${item.id}`}>
                       <figure>

@@ -7,13 +7,15 @@ const Categories = () => {
     filterCategory(category, event.target.checked);
   };
 
+  const categoriesCount = 5;
+
   return (
     <div className="mr-10">
       <h1 className="text-2xl font-bold border-b-2 p-2 mb-5">Categories</h1>
       {isLoading
-        ? Array.from({ length: categories.length }, (_, index) => (
+        ? Array.from({ length: categoriesCount }, (_, index) => (
             <div
-              className="skeleton h-6 bg-gray-300 w-full my-9 p-2"
+              className="skeleton h-6 bg-gray-300 w-48 my-9 p-2"
               key={index}
             ></div>
           ))
