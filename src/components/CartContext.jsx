@@ -37,12 +37,13 @@ export const CartProvider = ({ children }) => {
 
   const getFilteredItems = (query) => {
     if (!query) {
-      setQueriedItems(items);
+      setQueriedItems([]);
     } else {
       const filtered = items.filter((item) =>
         item.title.toLowerCase().includes(query.toLowerCase())
       );
       setQueriedItems(filtered);
+      setFilteredItems(filtered);
     }
   };
 

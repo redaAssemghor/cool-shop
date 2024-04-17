@@ -1,18 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useCart } from "./CartContext";
-import { useEffect, useState } from "react";
-import { saveToLocalStorage } from "../localStorageUtils";
+import { useState } from "react";
 
 function Navbar() {
   const { cartItems, totalItemsPrice, getFilteredItems } = useCart();
   const itemsCount = cartItems.length;
 
   const [query, setQuery] = useState("");
+  const param = useParams();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log("Saving cart items to local storage", cartItems);
-    saveToLocalStorage("LOCAL_CART_KEY", cartItems);
-  }, [cartItems]);
+  const getCorectLink = () => {
+    if (param !== "Shop") {
+      navigate("/shop");
+    }
+    console.log(param);
+  };
 
   return (
     <div
@@ -37,6 +40,7 @@ function Navbar() {
               const newQuery = e.target.value;
               setQuery(newQuery);
               getFilteredItems(newQuery);
+              getCorectLink();
             }}
           />
           <svg

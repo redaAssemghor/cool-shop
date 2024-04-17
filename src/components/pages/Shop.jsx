@@ -8,7 +8,6 @@ import { faTag, faBagShopping } from "@fortawesome/free-solid-svg-icons";
 
 function Shop() {
   const {
-    cartItems,
     filteredItems,
     addToCart,
     removeFromCart,
