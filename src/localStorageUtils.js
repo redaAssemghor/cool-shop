@@ -1,6 +1,5 @@
 export const saveToLocalStorage = (key, value) => {
   try {
-    console.log("Saving local utils", key, value);
     const serializedValue = JSON.stringify(value);
     localStorage.setItem(key, serializedValue);
   } catch (e) {
@@ -10,8 +9,6 @@ export const saveToLocalStorage = (key, value) => {
 
 export const loadFromLocalStorage = (key, defaultValue) => {
   try {
-    console.log("load local utils", key, defaultValue);
-
     const serializedValue = localStorage.getItem(key);
     if (serializedValue === null) {
       console.log(

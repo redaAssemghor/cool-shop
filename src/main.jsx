@@ -8,6 +8,7 @@ import Item from "./components/pages/Item.jsx";
 import { CartProvider } from "./components/CartContext.jsx";
 import CheckOut from "./components/pages/CheckOut.jsx";
 import Layout from "./Layout.jsx";
+import NotFound from "./components/pages/NotFound.jsx";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <CheckOut />
+      </Layout>
+    ),
+  },
+  {
+    path: "*",
+    element: (
+      <Layout>
+        <NotFound />
       </Layout>
     ),
   },

@@ -64,7 +64,6 @@ export const CartProvider = ({ children }) => {
         setCategories(Array.from(new Set(data.map((item) => item.category))));
       } catch (error) {
         console.error("Error fetching data:", error);
-        // Optionally set an error state and display a message based on this state
       } finally {
         setIsLoading(false);
       }
